@@ -7,7 +7,7 @@ class QuizResultScreen extends StatelessWidget {
 
   QuizResultScreen({
     required this.questions,
-    required this.correctAnswers,
+    required this.correctAnswers, required int currentScore, required int totalQuestions,
   });
 
   @override

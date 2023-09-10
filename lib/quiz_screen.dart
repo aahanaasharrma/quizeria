@@ -22,10 +22,13 @@ class _QuizScreenState extends State<QuizScreen> {
   int correctAnswers = 0; // Track the number of correct answers
   int secondsRemaining = 30; // Initial timer value
   late Timer timer; // Timer variable
+  int currentScore = 0; // Variable to keep track of the current score
+  int totalQuestions = 0; // Variable to store the total number of questions
 
   @override
   void initState() {
     super.initState();
+    totalQuestions = widget.numberOfQuestions;
     fetchQuizQuestions();
     startTimer();
   }
@@ -64,6 +67,7 @@ class _QuizScreenState extends State<QuizScreen> {
       if (questions[currentQuestionIndex].isCorrect) {
         // If the user's answer is correct
         correctAnswers++;
+        currentScore++; // Increase the score
       }
     }
 
@@ -84,10 +88,13 @@ class _QuizScreenState extends State<QuizScreen> {
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => QuizResultScreen(
-          questions: questions,
-          correctAnswers: correctAnswers,
-        ),
+        builder: (context) =>
+            QuizResultScreen(
+              questions: questions,
+              correctAnswers: correctAnswers,
+              currentScore: currentScore, // Pass the current score
+              totalQuestions: totalQuestions, // Pass the total number of questions
+            ),
       ),
     );
   }
@@ -104,7 +111,6 @@ class _QuizScreenState extends State<QuizScreen> {
     timer.cancel();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     if (questions.isEmpty) {
@@ -115,40 +121,65 @@ class _QuizScreenState extends State<QuizScreen> {
     final Question currentQuestion = questions[currentQuestionIndex];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Quiz App"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              currentQuestion.text,
-              style: TextStyle(fontSize: 20),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(color: Colors.grey, width: 5.0), // Increase left border width
+                right: BorderSide(color: Colors.grey, width: 1.0),
+              ),
             ),
-            SizedBox(height: 20),
-            // Display timer
-            Text(
-              "Time Remaining: $secondsRemaining seconds",
-              style: TextStyle(fontSize: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Question ${currentQuestionIndex + 1} of $totalQuestions", // Display question number
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                Text(
+                  currentQuestion.text,
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(height: 20),
+                // Display timer
+                Text(
+                  "Time Remaining: $secondsRemaining seconds",
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 20),
+                // Display answer options as buttons (you can customize the UI)
+                Column(
+                  children: currentQuestion.options
+                      .asMap()
+                      .entries
+                      .map((entry) => ElevatedButton(
+                    onPressed: () {
+                      // Handle option selection
+                      handleAnswerSelection(entry.key);
+                    },
+                    child: Text(entry.value),
+                  ))
+                      .toList(),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            // Display answer options as buttons (you can customize the UI)
-            Column(
-              children: currentQuestion.options
-                  .asMap()
-                  .entries
-                  .map((entry) => ElevatedButton(
-                onPressed: () {
-                  // Handle option selection
-                  handleAnswerSelection(entry.key);
-                },
-                child: Text(entry.value),
-              ))
-                  .toList(),
+          ),
+          Positioned(
+            top: 50.0, // Adjust the top position as needed to bring it down
+            right: 10.0, // Adjust the right position as needed
+            child: Text(
+              "Score: $currentScore", // Display current score
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
