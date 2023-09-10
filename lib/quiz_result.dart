@@ -39,21 +39,23 @@ class QuizResultScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final question = questions[index];
                   final isCorrect = question.userAnswerIndex == question.correctOptionIndex;
-                  final textColor = isCorrect ? Colors.green : Colors.red;
+                  final isUnanswered = question.userAnswerIndex == -1; // -1 indicates an unanswered question
+                  final textColor = isCorrect ? Colors.green : (isUnanswered ? Colors.blue : Colors.red);
+                  final yourAnswerText = isUnanswered ? "Your Answer: Not Answered" : "Your Answer: ${question.userAnswerIndex != null ? question.options[question.userAnswerIndex!] : 'N/A'}";
 
                   return ListTile(
                     title: Text(
                       "Question ${index + 1}: ${question.text}",
                       style: TextStyle(
-                        color: textColor, // Set text color to green or red
+                        color: textColor, // Set text color to green, blue, or red
                       ),
                     ),
                     subtitle: Text(
                       isCorrect
-                          ? "Your Answer: ${question.options[question.userAnswerIndex!]} (Correct Answer: ${question.options[question.correctOptionIndex]})"
-                          : "Your Answer: ${question.options[question.userAnswerIndex!]} (Correct Answer: ${question.options[question.correctOptionIndex]})",
+                          ? "$yourAnswerText (Correct Answer: ${question.options[question.correctOptionIndex]})"
+                          : "$yourAnswerText (Correct Answer: ${question.options[question.correctOptionIndex]})",
                       style: TextStyle(
-                        color: textColor, // Set text color to green or red
+                        color: textColor, // Set text color to green, blue, or red
                       ),
                     ),
                   );
