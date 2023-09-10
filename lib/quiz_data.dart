@@ -5,12 +5,18 @@ class Question {
   final String text;
   final List<String> options;
   final int correctOptionIndex;
+  int? userAnswerIndex;
 
   Question({
     required this.text,
     required this.options,
     required this.correctOptionIndex,
+    this.userAnswerIndex,
   });
+
+  bool get isCorrect {
+    return userAnswerIndex == correctOptionIndex;
+  }
 }
 
 Future<List<Question>> fetchQuestions(String? category, int numberOfQuestions) async {
