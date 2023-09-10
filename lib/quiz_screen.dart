@@ -6,10 +6,12 @@ import 'quiz_data.dart';
 class QuizScreen extends StatefulWidget {
   final String categoryId; // Pass the category ID
   final int numberOfQuestions; // Specify the number of questions you want
+  final List<Question>? customQuestions; // Add a parameter for custom questions
 
   QuizScreen({
     required this.categoryId,
     required this.numberOfQuestions,
+    this.customQuestions, // Initialize the parameter
   });
 
   @override
@@ -28,17 +30,22 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    totalQuestions = widget.numberOfQuestions;
-    fetchQuizQuestions();
-    startTimer();
+    if (widget.customQuestions == null) {
+      // Fetch questions only if custom questions are not provided
+      totalQuestions = widget.numberOfQuestions;
+      fetchQuizQuestions();
+      startTimer();
+    } else {
+      // Use custom questions if provided
+      questions = widget.customQuestions!;
+      totalQuestions = questions.length;
+      startTimer();
+    }
   }
 
   void fetchQuizQuestions() async {
     try {
-      final fetchedQuestions = await fetchQuestions(
-        widget.categoryId, // Pass the category ID
-        widget.numberOfQuestions, // Pass the number of questions
-      );
+      final fetchedQuestions = await fetchQuestions(widget.categoryId, widget.numberOfQuestions);
       setState(() {
         questions = fetchedQuestions;
       });
@@ -71,7 +78,7 @@ class _QuizScreenState extends State<QuizScreen> {
       }
     }
 
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < totalQuestions - 1) {
       setState(() {
         currentQuestionIndex++;
         secondsRemaining = 30; // Reset the timer for the next question
@@ -88,13 +95,12 @@ class _QuizScreenState extends State<QuizScreen> {
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) =>
-            QuizResultScreen(
-              questions: questions,
-              correctAnswers: correctAnswers,
-              currentScore: currentScore, // Pass the current score
-              totalQuestions: totalQuestions, // Pass the total number of questions
-            ),
+        builder: (context) => QuizResultScreen(
+          questions: questions,
+          correctAnswers: correctAnswers,
+          currentScore: currentScore, // Pass the current score
+          totalQuestions: totalQuestions, // Pass the total number of questions
+        ),
       ),
     );
   }
@@ -111,6 +117,7 @@ class _QuizScreenState extends State<QuizScreen> {
     timer.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     if (questions.isEmpty) {

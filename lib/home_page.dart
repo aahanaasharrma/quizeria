@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'quiz_data.dart';
 import 'quiz_screen.dart';
+import 'custom_quiz_screen.dart'; // Import the custom quiz screen
 
 class HomePage extends StatelessWidget {
   final Map<String, String> categoryIds = {
@@ -89,6 +90,11 @@ class HomePage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Navigate to the custom quiz creation screen
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CustomQuizScreen(), // Create and navigate to the custom quiz screen
+                    ),
+                  );
                 },
                 child: Text(
                   "Create Custom Quiz",
