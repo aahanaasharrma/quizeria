@@ -13,9 +13,12 @@ class Question {
   });
 }
 
-Future<List<Question>> fetchQuestions(String category, int numberOfQuestions) async {
+Future<List<Question>> fetchQuestions(String? category, int numberOfQuestions) async {
+  if (category == null) {
+    throw ArgumentError("Category cannot be null.");
+  }
   final response = await http.get(
-    Uri.parse('https://opentdb.com/api.php?amount=10&category=$category'), // Modify the URL to include the 'category' parameter
+    Uri.parse('https://opentdb.com/api.php?amount=$numberOfQuestions&category=$category'), // Include the 'category' and 'amount' parameters
   );
 
   if (response.statusCode == 200) {
@@ -32,10 +35,4 @@ Future<List<Question>> fetchQuestions(String category, int numberOfQuestions) as
   } else {
     throw Exception('Failed to load questions');
   }
-}
-
-class Quiz {
-  final List<Question> questions;
-
-  Quiz({required this.questions});
 }
