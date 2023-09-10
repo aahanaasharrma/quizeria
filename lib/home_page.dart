@@ -86,8 +86,16 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 40), // Increase the gap
+              Text(
+                "Create your own custom quiz:", // Add this line
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.brown,
+                ),
+              ),
               SizedBox(height: 20),
-              ElevatedButton(
+              TextButton( // Use FlatButton for a flat button
                 onPressed: () {
                   // Navigate to the custom quiz creation screen
                   Navigator.of(context).push(
@@ -96,9 +104,19 @@ class HomePage extends StatelessWidget {
                     ),
                   );
                 },
-                child: Text(
-                  "Create Custom Quiz",
-                  style: TextStyle(fontSize: 18),
+                child: Container(
+                  width: 400, // Set the width of the button
+                  height: 150, // Set the height of the button
+                  decoration: BoxDecoration(
+                    color: Colors.brown, // Set the background color to brown
+                    borderRadius: BorderRadius.circular(10), // Add rounded corners to the button
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Create Custom Quiz",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
             ],

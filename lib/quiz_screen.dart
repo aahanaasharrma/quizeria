@@ -128,65 +128,88 @@ class _QuizScreenState extends State<QuizScreen> {
     final Question currentQuestion = questions[currentQuestionIndex];
 
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(color: Colors.grey, width: 5.0), // Increase left border width
-                right: BorderSide(color: Colors.grey, width: 1.0),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/home_bg.jpg"), // Replace with your image asset path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.grey, width: 5.0), // Increase left border width
+                  right: BorderSide(color: Colors.grey, width: 1.0),
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Question ${currentQuestionIndex + 1} of $totalQuestions", // Display question number
-                    style: TextStyle(fontSize: 18),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.brown, // Brown background color
+                      borderRadius: BorderRadius.circular(10), // Rounded edges
+                    ),
+                    child: Text(
+                      "Question ${currentQuestionIndex + 1} of $totalQuestions\n\n${currentQuestion.text}", // Display question number and text
+                      style: TextStyle(fontSize: 20, color: Colors.white), // Text color is white
+                    ),
                   ),
-                ),
-                Text(
-                  currentQuestion.text,
-                  style: TextStyle(fontSize: 20),
-                ),
-                SizedBox(height: 20),
-                // Display timer
-                Text(
-                  "Time Remaining: $secondsRemaining seconds",
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 20),
-                // Display answer options as buttons (you can customize the UI)
-                Column(
-                  children: currentQuestion.options
-                      .asMap()
-                      .entries
-                      .map((entry) => ElevatedButton(
-                    onPressed: () {
-                      // Handle option selection
-                      handleAnswerSelection(entry.key);
-                    },
-                    child: Text(entry.value),
-                  ))
-                      .toList(),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 50.0, // Adjust the top position as needed to bring it down
-            right: 10.0, // Adjust the right position as needed
-            child: Text(
-              "Score: $currentScore", // Display current score
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                  SizedBox(height: 20),
+                  // Display timer
+                  Text(
+                    "Time Remaining: $secondsRemaining seconds",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.brown, // Set text color to brown
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  // Display answer options as buttons (you can customize the UI)
+                  Column(
+                    children: currentQuestion.options
+                        .asMap()
+                        .entries
+                        .map((entry) => Container(
+                      margin: EdgeInsets.symmetric(vertical: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.brown, // Brown background color
+                        borderRadius: BorderRadius.circular(10), // Rounded edges
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          // Handle option selection
+                          handleAnswerSelection(entry.key);
+                        },
+                        style: TextButton.styleFrom(primary: Colors.transparent), // Transparent button background
+                        child: Text(
+                          entry.value,
+                          style: TextStyle(color: Colors.white), // Text color is white
+                        ),
+                      ),
+                    ))
+                        .toList(),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 50.0, // Adjust the top position as needed to bring it down
+              right: 10.0, // Adjust the right position as needed
+              child: Text(
+                "Score: $currentScore", // Display current score
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.brown,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
