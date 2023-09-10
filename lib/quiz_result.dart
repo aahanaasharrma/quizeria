@@ -16,6 +16,7 @@ class QuizResultScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Quiz Results"),
       ),
+<<<<<<< HEAD
       body: Container(
         color: Colors.black, // Set the background color to black
         child: Column(
@@ -64,6 +65,37 @@ class QuizResultScreen extends StatelessWidget {
             ),
           ],
         ),
+=======
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Total Score: ${correctAnswers}/${questions.length}",
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: questions.length,
+              itemBuilder: (context, index) {
+                final question = questions[index];
+                final isCorrect = question.userAnswerIndex == question.correctOptionIndex;
+
+                return ListTile(
+                  title: Text(question.text),
+                  subtitle: Text(
+                    isCorrect
+                        ? "Your Answer: ${question.options[question.userAnswerIndex!]}"
+                        : "Your Answer: ${question.options[question.userAnswerIndex!]} (Correct Answer: ${question.options[question.correctOptionIndex]})",
+                  ),
+                  tileColor: isCorrect ? Colors.green : Colors.red,
+                );
+              },
+            ),
+          ),
+        ],
+>>>>>>> origin/master
       ),
     );
   }
