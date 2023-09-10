@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:html/parser.dart'; // Import the html package
+import 'package:html/parser.dart';
+import 'package:quizeria/quiz_screen.dart'; // Import the html package
 
 class Question {
   final String text;
@@ -21,7 +23,7 @@ class Question {
 }
 
 
-Future<List<Question>> fetchQuestions(String? category, int numberOfQuestions) async {
+Future<List<Question>> fetchQuestions(String category, int numberOfQuestions) async {
   if (category == null) {
     throw ArgumentError("Category cannot be null.");
   }
@@ -46,13 +48,12 @@ Future<List<Question>> fetchQuestions(String? category, int numberOfQuestions) a
   }
 }
 
-Future<List<Question>> fetchQuestionsByTopic(String topic, int numberOfQuestions) async {
-  if (topic.isEmpty) {
-    throw ArgumentError("Topic cannot be empty.");
+Future<List<Question>> fetchQuestionsByCategory(String categoryId, int numberOfQuestions) async {
+  if (categoryId.isEmpty) {
+    throw ArgumentError("Category ID cannot be empty.");
   }
 
-  final formattedTopic = Uri.encodeComponent(topic); // Encode the topic for URL
-  final apiUrl = 'https://opentdb.com/api.php?amount=$numberOfQuestions&category=custom&topic=$formattedTopic';
+  final apiUrl = 'https://opentdb.com/api.php?amount=$numberOfQuestions&category=$categoryId';
   print('API URL: $apiUrl'); // Add this line for debugging
 
   final response = await http.get(Uri.parse(apiUrl));
@@ -75,4 +76,24 @@ Future<List<Question>> fetchQuestionsByTopic(String topic, int numberOfQuestions
     print('API Request Failed: ${response.statusCode}'); // Add this line for debugging
     throw Exception('Failed to load questions');
   }
+}
+
+Future<String?> fetchCategoryIDByTopic(String topic) async {
+  final response = await http.get(Uri.parse('https://opentdb.com/api_category.php'));
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = json.decode(response.body);
+    final List<dynamic> categories = data['trivia_categories'];
+
+    final category = categories.firstWhere(
+          (category) => category['name'].toLowerCase() == topic.toLowerCase(),
+      orElse: () => null, // Return null if no matching category is found
+    );
+
+    if (category != null) {
+      return category['id'].toString();
+    }
+  }
+
+  return null; // Return null if no category is found for the entered topic
 }
