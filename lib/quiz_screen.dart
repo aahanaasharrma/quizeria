@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizeria/quiz_result.dart'; // Import the QuizResultScreen
 import 'dart:async';
 import 'quiz_data.dart';
 
@@ -18,7 +19,9 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   List<Question> questions = [];
   int currentQuestionIndex = 0;
+  int correctAnswers = 0; // Track the number of correct answers
   int secondsRemaining = 30; // Initial timer value
+  late Timer timer; // Timer variable
 
   @override
   void initState() {
@@ -44,10 +47,10 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void startTimer() {
     const oneSecond = Duration(seconds: 1);
-    Timer.periodic(oneSecond, (timer) {
+    timer = Timer.periodic(oneSecond, (timer) {
       if (secondsRemaining == 0) {
         // Handle time-up scenario (e.g., move to the next question)
-        moveToNextQuestion();
+        moveToNextQuestion(didExceedTimer: true);
         return;
       }
       setState(() {
@@ -56,7 +59,14 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
-  void moveToNextQuestion() {
+  void moveToNextQuestion({bool didExceedTimer = false}) {
+    if (!didExceedTimer) {
+      if (questions[currentQuestionIndex].isCorrect) {
+        // If the user's answer is correct
+        correctAnswers++;
+      }
+    }
+
     if (currentQuestionIndex < questions.length - 1) {
       setState(() {
         currentQuestionIndex++;
@@ -64,8 +74,35 @@ class _QuizScreenState extends State<QuizScreen> {
       });
     } else {
       // Handle end of the quiz (e.g., show results)
-      // You can navigate to a result screen or perform any desired actions here.
+      showQuizResults();
     }
+  }
+
+  void showQuizResults() {
+    // Cancel the timer before navigating to the results screen
+    timer.cancel();
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => QuizResultScreen(
+          questions: questions,
+          correctAnswers: correctAnswers,
+        ),
+      ),
+    );
+  }
+
+  void handleAnswerSelection(int selectedOptionIndex) {
+    final Question currentQuestion = questions[currentQuestionIndex];
+    currentQuestion.userAnswerIndex = selectedOptionIndex;
+    moveToNextQuestion();
+  }
+
+  @override
+  void dispose() {
+    // Cancel the timer when disposing of the screen
+    timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -104,12 +141,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   .map((entry) => ElevatedButton(
                 onPressed: () {
                   // Handle option selection
-                  if (entry.key == currentQuestion.correctOptionIndex) {
-                    // Correct answer selected
-                    moveToNextQuestion();
-                  } else {
-                    // Incorrect answer selected (you can handle this case)
-                  }
+                  handleAnswerSelection(entry.key);
                 },
                 child: Text(entry.value),
               ))
