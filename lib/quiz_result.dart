@@ -8,9 +8,20 @@ class QuizResultScreen extends StatelessWidget {
   QuizResultScreen({
     required this.questions,
     required this.correctAnswers,
-    required int currentScore,
-    required int totalQuestions,
+    int currentScore = 0, // Provide a default value for currentScore
+    int totalQuestions = 0, // Provide a default value for totalQuestions
   });
+
+  String getFeedback() {
+    // You can customize feedback messages based on the user's performance here
+    if (correctAnswers == questions.length) {
+      return "Perfect Score! You answered all questions correctly!";
+    } else if (correctAnswers >= questions.length / 2) {
+      return "Good Job! You got $correctAnswers out of ${questions.length} correct.";
+    } else {
+      return "Keep Practicing. You got $correctAnswers out of ${questions.length} correct.";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +139,18 @@ class QuizResultScreen extends StatelessWidget {
                     ),
                   );
                 },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                getFeedback(), // Display the feedback message
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.brown, // Set text color to brown
+                  fontWeight: FontWeight.bold, // Make text bolder
+                ),
+                textAlign: TextAlign.center, // Center align the text
               ),
             ),
           ],
