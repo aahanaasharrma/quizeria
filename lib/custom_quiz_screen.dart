@@ -13,17 +13,18 @@ class CustomQuizScreen extends StatefulWidget {
 class _CustomQuizScreenState extends State<CustomQuizScreen> {
   final TextEditingController _topicController = TextEditingController();
   int numberOfQuestions = 10;
-  String? selectedCategoryId; // Store the selected category ID
+  String? selectedCategoryId;
 
   @override
   void initState() {
     super.initState();
-    fetchCategories(); // Fetch the list of categories when the screen loads
+    fetchCategories();
   }
 
   Future<void> fetchCategories() async {
     final response = await http.get(
-        Uri.parse('https://opentdb.com/api_category.php'));
+      Uri.parse('https://opentdb.com/api_category.php'),
+    );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -44,7 +45,8 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
 
   Future<void> fetchCategoryID(String topic) async {
     final response = await http.get(
-        Uri.parse('https://opentdb.com/api_category.php'));
+      Uri.parse('https://opentdb.com/api_category.php'),
+    );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -60,26 +62,23 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
         setState(() {
           selectedCategoryId = category['id'].toString();
         });
-        print('Selected Category ID: $selectedCategoryId'); // Add this line
-        // Continue with fetching questions using the selectedCategoryId
+
         final questions = await fetchQuestionsByCategory(
-            selectedCategoryId!, numberOfQuestions);
+          selectedCategoryId!,
+          numberOfQuestions,
+        );
 
         if (questions.isNotEmpty) {
-          // Navigate to the quiz screen with the fetched questions
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) =>
-                  QuizScreen(
-                    categoryId: selectedCategoryId!,
-                    // Use the fetched category ID
-                    numberOfQuestions: numberOfQuestions,
-                    customQuestions: questions,
-                  ),
+              builder: (context) => QuizScreen(
+                categoryId: selectedCategoryId!,
+                numberOfQuestions: numberOfQuestions,
+                customQuestions: questions,
+              ),
             ),
           );
         } else {
-          // Handle the case where no questions were found for the category
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("No questions found for the topic '$topic'."),
@@ -87,7 +86,6 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
           );
         }
       } else {
-        // Handle the case where no matching category was found
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("No category found for the topic '$topic'."),
@@ -104,38 +102,37 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
     _topicController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/home_bg.jpg"), // Replace with your asset path
+            image: AssetImage("assets/images/home_bg.jpg"),
             fit: BoxFit.cover,
           ),
         ),
-        child: Center( // Center the content vertically and horizontally
+        child: Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center, // Center vertically
-              crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 350,
                   decoration: BoxDecoration(
-                    color: Colors.brown, // Brown color
-                    borderRadius: BorderRadius.circular(10), // Rounded edges
+                    color: Colors.brown,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextButton(
-                    onPressed: () {
-                      // Your action when the "Enter Topic" button is pressed
-                    },
+                    onPressed: () {},
                     child: Text(
-                      "Enter Topic", // Change text as needed
+                      "Enter Topic",
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white, // White text color
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -162,24 +159,24 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
                 ),
                 SizedBox(height: 20),
                 Container(
-                  width: 250, // Adjust the width as needed
+                  width: 250,
                   child: TextField(
                     controller: _topicController,
                     decoration: InputDecoration(
                       hintText: "Enter the topic",
-                      border: OutlineInputBorder( // Add border for a text field
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                       filled: true,
-                      fillColor: Colors.white, // White background color
+                      fillColor: Colors.white,
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.brown, // Brown color
-                    borderRadius: BorderRadius.circular(10), // Rounded edges
+                    color: Colors.brown,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextButton(
                     onPressed: () async {
@@ -188,21 +185,20 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
                         final categoryId = await fetchCategoryIDByTopic(topic);
 
                         if (categoryId != null) {
-                          final questions = await fetchQuestionsByCategory(categoryId, numberOfQuestions);
+                          final questions = await fetchQuestionsByCategory(
+                              categoryId, numberOfQuestions);
 
                           if (questions.isNotEmpty) {
-                            // Navigate to the quiz screen with the fetched questions
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => QuizScreen(
-                                  categoryId: categoryId, // Use the fetched category ID
+                                  categoryId: categoryId,
                                   numberOfQuestions: numberOfQuestions,
                                   customQuestions: questions,
                                 ),
                               ),
                             );
                           } else {
-                            // Handle the case where no questions were found for the category
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text("No questions found for the topic '$topic'."),
@@ -210,7 +206,6 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
                             );
                           }
                         } else {
-                          // Handle the case where no matching category was found
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("No category found for the topic '$topic'."),
@@ -218,7 +213,6 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
                           );
                         }
                       } else {
-                        // Handle the case where the topic field is empty
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("Please enter a topic for your custom quiz."),
@@ -227,10 +221,10 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
                       }
                     },
                     child: Text(
-                      "Start Custom Quiz", // Change text as needed
+                      "Start Custom Quiz",
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white, // White text color
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -243,6 +237,7 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
     );
   }
 }
+
 class CategoryData {
   final int id;
   final String name;

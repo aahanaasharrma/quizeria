@@ -4,14 +4,14 @@ import 'dart:async';
 import 'quiz_data.dart';
 
 class QuizScreen extends StatefulWidget {
-  final String categoryId; // Pass the category ID
-  final int numberOfQuestions; // Specify the number of questions you want
-  final List<Question>? customQuestions; // Add a parameter for custom questions
+  final String categoryId;
+  final int numberOfQuestions;
+  final List<Question>? customQuestions;
 
   QuizScreen({
     required this.categoryId,
     required this.numberOfQuestions,
-    this.customQuestions, // Initialize the parameter
+    this.customQuestions,
   });
 
   @override
@@ -21,22 +21,20 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   List<Question> questions = [];
   int currentQuestionIndex = 0;
-  int correctAnswers = 0; // Track the number of correct answers
-  int secondsRemaining = 30; // Initial timer value
-  late Timer timer; // Timer variable
-  int currentScore = 0; // Variable to keep track of the current score
-  int totalQuestions = 0; // Variable to store the total number of questions
+  int correctAnswers = 0;
+  int secondsRemaining = 30;
+  late Timer timer;
+  int currentScore = 0;
+  int totalQuestions = 0;
 
   @override
   void initState() {
     super.initState();
     if (widget.customQuestions == null) {
-      // Fetch questions only if custom questions are not provided
       totalQuestions = widget.numberOfQuestions;
       fetchQuizQuestions();
       startTimer();
     } else {
-      // Use custom questions if provided
       questions = widget.customQuestions!;
       totalQuestions = questions.length;
       startTimer();
@@ -50,7 +48,6 @@ class _QuizScreenState extends State<QuizScreen> {
         questions = fetchedQuestions;
       });
     } catch (e) {
-      // Handle the error
       print('Error fetching questions: $e');
     }
   }
@@ -59,7 +56,6 @@ class _QuizScreenState extends State<QuizScreen> {
     const oneSecond = Duration(seconds: 1);
     timer = Timer.periodic(oneSecond, (timer) {
       if (secondsRemaining == 0) {
-        // Handle time-up scenario (e.g., move to the next question)
         moveToNextQuestion(didExceedTimer: true);
         return;
       }
@@ -72,25 +68,22 @@ class _QuizScreenState extends State<QuizScreen> {
   void moveToNextQuestion({bool didExceedTimer = false}) {
     if (!didExceedTimer) {
       if (questions[currentQuestionIndex].isCorrect) {
-        // If the user's answer is correct
         correctAnswers++;
-        currentScore++; // Increase the score
+        currentScore++;
       }
     }
 
     if (currentQuestionIndex < totalQuestions - 1) {
       setState(() {
         currentQuestionIndex++;
-        secondsRemaining = 30; // Reset the timer for the next question
+        secondsRemaining = 30;
       });
     } else {
-      // Handle end of the quiz (e.g., show results)
       showQuizResults();
     }
   }
 
   void showQuizResults() {
-    // Cancel the timer before navigating to the results screen
     timer.cancel();
 
     Navigator.of(context).pushReplacement(
@@ -98,8 +91,8 @@ class _QuizScreenState extends State<QuizScreen> {
         builder: (context) => QuizResultScreen(
           questions: questions,
           correctAnswers: correctAnswers,
-          currentScore: currentScore, // Pass the current score
-          totalQuestions: totalQuestions, // Pass the total number of questions
+          currentScore: currentScore,
+          totalQuestions: totalQuestions,
         ),
       ),
     );
@@ -113,7 +106,6 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   void dispose() {
-    // Cancel the timer when disposing of the screen
     timer.cancel();
     super.dispose();
   }
@@ -121,7 +113,6 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     if (questions.isEmpty) {
-      // Display a loading indicator or message while fetching questions
       return Center(child: CircularProgressIndicator());
     }
 
@@ -131,7 +122,7 @@ class _QuizScreenState extends State<QuizScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/home_bg.jpg"), // Replace with your image asset path
+            image: AssetImage("assets/images/home_bg.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -140,35 +131,33 @@ class _QuizScreenState extends State<QuizScreen> {
             Container(
               decoration: BoxDecoration(
                 border: Border(
-                  left: BorderSide(color: Colors.grey, width: 5.0), // Increase left border width
+                  left: BorderSide(color: Colors.grey, width: 5.0),
                   right: BorderSide(color: Colors.grey, width: 1.0),
                 ),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: Colors.brown, // Brown background color
-                      borderRadius: BorderRadius.circular(10), // Rounded edges
+                      color: Colors.brown,
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      "Question ${currentQuestionIndex + 1} of $totalQuestions\n\n${currentQuestion.text}", // Display question number and text
-                      style: TextStyle(fontSize: 20, color: Colors.white), // Text color is white
+                      "Question ${currentQuestionIndex + 1} of $totalQuestions\n\n${currentQuestion.text}",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ),
                   SizedBox(height: 20),
-                  // Display timer
                   Text(
                     "Time Remaining: $secondsRemaining seconds",
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.brown, // Set text color to brown
+                      color: Colors.brown,
                     ),
                   ),
                   SizedBox(height: 20),
-                  // Display answer options as buttons (you can customize the UI)
                   Column(
                     children: currentQuestion.options
                         .asMap()
@@ -176,18 +165,17 @@ class _QuizScreenState extends State<QuizScreen> {
                         .map((entry) => Container(
                       margin: EdgeInsets.symmetric(vertical: 5.0),
                       decoration: BoxDecoration(
-                        color: Colors.brown, // Brown background color
-                        borderRadius: BorderRadius.circular(10), // Rounded edges
+                        color: Colors.brown,
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextButton(
                         onPressed: () {
-                          // Handle option selection
                           handleAnswerSelection(entry.key);
                         },
-                        style: TextButton.styleFrom(primary: Colors.transparent), // Transparent button background
+                        style: TextButton.styleFrom(primary: Colors.transparent),
                         child: Text(
                           entry.value,
-                          style: TextStyle(color: Colors.white), // Text color is white
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ))
@@ -197,10 +185,10 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ),
             Positioned(
-              top: 50.0, // Adjust the top position as needed to bring it down
-              right: 10.0, // Adjust the right position as needed
+              top: 50.0,
+              right: 10.0,
               child: Text(
-                "Score: $currentScore", // Display current score
+                "Score: $currentScore",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

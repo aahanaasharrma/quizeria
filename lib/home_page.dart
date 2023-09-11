@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'quiz_data.dart';
 import 'quiz_screen.dart';
-import 'custom_quiz_screen.dart'; // Import the custom quiz screen
+import 'custom_quiz_screen.dart';
 
 class HomePage extends StatelessWidget {
   final Map<String, String> categoryIds = {
@@ -19,8 +19,8 @@ class HomePage extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/home_bg.jpg"), // Replace with your image asset path
-                fit: BoxFit.cover, // Adjust the fit as needed
+                image: AssetImage("assets/images/home_bg.jpg"),
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -30,21 +30,21 @@ class HomePage extends StatelessWidget {
               Text(
                 "Choose a Quiz Category:",
                 style: TextStyle(
-                  fontSize: 24, // Increase font size
+                  fontSize: 24,
                   color: Colors.brown,
                 ),
               ),
               SizedBox(height: 20),
               Center(
                 child: Container(
-                  width: 400, // Set the width of the rectangle
-                  height: 400, // Set the height of the rectangle
+                  width: 400,
+                  height: 400,
                   decoration: BoxDecoration(
-                    color: Colors.brown, // Set the background color to dark brown
-                    borderRadius: BorderRadius.circular(20), // Add rounded corners to the rectangle
+                    color: Colors.brown,
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: GridView.count(
-                    crossAxisCount: 2, // 2 columns in each row
+                    crossAxisCount: 2,
                     children: categoryIds.keys.map((categoryName) {
                       final categoryId = categoryIds[categoryName];
                       return GestureDetector(
@@ -62,20 +62,19 @@ class HomePage extends StatelessWidget {
                             );
                           } else {
                             // Handle the case where categoryId is null
-                            // You can show an error message or take appropriate action.
                           }
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 0), // Add border to each category
+                            border: Border.all(color: Colors.white, width: 0),
                           ),
                           child: Center(
                             child: Text(
                               categoryName,
                               style: TextStyle(
                                 fontSize: categoryName == "Science" || categoryName == "History" || categoryName == "Geography" || categoryName == "General Knowledge"
-                                    ? 20  // Increase font size for specific categories
-                                    : 18, // Default font size
+                                    ? 20
+                                    : 18,
                                 color: Colors.white,
                               ),
                             ),
@@ -86,30 +85,29 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 40), // Increase the gap
+              SizedBox(height: 40),
               Text(
-                "Create your own custom quiz:", // Add this line
+                "Create your own custom quiz:",
                 style: TextStyle(
                   fontSize: 24,
                   color: Colors.brown,
                 ),
               ),
               SizedBox(height: 20),
-              TextButton( // Use FlatButton for a flat button
+              TextButton(
                 onPressed: () {
-                  // Navigate to the custom quiz creation screen
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => CustomQuizScreen(), // Create and navigate to the custom quiz screen
+                      builder: (context) => CustomQuizScreen(),
                     ),
                   );
                 },
                 child: Container(
-                  width: 400, // Set the width of the button
-                  height: 150, // Set the height of the button
+                  width: 400,
+                  height: 150,
                   decoration: BoxDecoration(
-                    color: Colors.brown, // Set the background color to brown
-                    borderRadius: BorderRadius.circular(10), // Add rounded corners to the button
+                    color: Colors.brown,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
                     child: Text(

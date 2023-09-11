@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
-import 'package:quizeria/quiz_screen.dart'; // Import the html package
+import 'package:quizeria/quiz_screen.dart';
 
 class Question {
   final String text;
@@ -22,7 +22,6 @@ class Question {
   }
 }
 
-
 Future<List<Question>> fetchQuestions(String category, int numberOfQuestions) async {
   if (category == null) {
     throw ArgumentError("Category cannot be null.");
@@ -36,9 +35,9 @@ Future<List<Question>> fetchQuestions(String category, int numberOfQuestions) as
     final List<dynamic> questions = data['results'];
 
     return questions.map((questionData) {
-      final questionText = parse(questionData['question']).body?.text; // Decode HTML character entities
+      final questionText = parse(questionData['question']).body?.text;
       return Question(
-        text: questionText ?? "", // Use an empty string if parsing fails
+        text: questionText ?? "",
         options: List<String>.from(questionData['incorrect_answers']) + [questionData['correct_answer']],
         correctOptionIndex: questionData['incorrect_answers'].length,
       );
@@ -54,8 +53,6 @@ Future<List<Question>> fetchQuestionsByCategory(String categoryId, int numberOfQ
   }
 
   final apiUrl = 'https://opentdb.com/api.php?amount=$numberOfQuestions&category=$categoryId';
-  print('API URL: $apiUrl'); // Add this line for debugging
-
   final response = await http.get(Uri.parse(apiUrl));
 
   if (response.statusCode == 200) {
@@ -73,7 +70,6 @@ Future<List<Question>> fetchQuestionsByCategory(String categoryId, int numberOfQ
       );
     }).toList();
   } else {
-    print('API Request Failed: ${response.statusCode}'); // Add this line for debugging
     throw Exception('Failed to load questions');
   }
 }
@@ -87,7 +83,7 @@ Future<String?> fetchCategoryIDByTopic(String topic) async {
 
     final category = categories.firstWhere(
           (category) => category['name'].toLowerCase() == topic.toLowerCase(),
-      orElse: () => null, // Return null if no matching category is found
+      orElse: () => null,
     );
 
     if (category != null) {
@@ -95,5 +91,5 @@ Future<String?> fetchCategoryIDByTopic(String topic) async {
     }
   }
 
-  return null; // Return null if no category is found for the entered topic
+  return null;
 }

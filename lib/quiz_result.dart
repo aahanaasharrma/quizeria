@@ -8,12 +8,11 @@ class QuizResultScreen extends StatelessWidget {
   QuizResultScreen({
     required this.questions,
     required this.correctAnswers,
-    int currentScore = 0, // Provide a default value for currentScore
-    int totalQuestions = 0, // Provide a default value for totalQuestions
+    int currentScore = 0,
+    int totalQuestions = 0,
   });
 
   String getFeedback() {
-    // You can customize feedback messages based on the user's performance here
     if (correctAnswers == questions.length) {
       return "Perfect Score! You answered all questions correctly!";
     } else if (correctAnswers >= questions.length / 2) {
@@ -29,34 +28,32 @@ class QuizResultScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/home_bg.jpg"), // Replace with your image asset path
+            image: AssetImage("assets/images/home_bg.jpg"),
             fit: BoxFit.cover,
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 40), // Add space at the top
+            SizedBox(height: 40),
             TextButton(
               onPressed: () {
-                // Use Navigator.popUntil to go back to the home page
-                Navigator.popUntil(context, ModalRoute.withName('home_page.dart')); // Replace '/' with the route of your home page
+                Navigator.popUntil(context, ModalRoute.withName('home_page.dart'));
               },
-
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.brown), // Set button background color to brown
-                minimumSize: MaterialStateProperty.all(Size(400, 80)), // Set button size
+                backgroundColor: MaterialStateProperty.all(Colors.brown),
+                minimumSize: MaterialStateProperty.all(Size(400, 80)),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0), // Set button border radius
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
               ),
               child: Text(
                 "Total Score: ${correctAnswers}/${questions.length}",
                 style: TextStyle(
-                  fontSize: 30, // Increase font size
-                  color: Colors.white, // Set text color to white
+                  fontSize: 30,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -66,7 +63,7 @@ class QuizResultScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final question = questions[index];
                   final isCorrect = question.userAnswerIndex == question.correctOptionIndex;
-                  final isUnanswered = question.userAnswerIndex == -1; // -1 indicates an unanswered question
+                  final isUnanswered = question.userAnswerIndex == -1;
                   final textColor = isCorrect ? Colors.green : (isUnanswered ? Colors.blue : Colors.red);
                   final yourAnswerText = isUnanswered ? "Your Answer: Not Answered" : "Your Answer: ${question.userAnswerIndex != null ? question.options[question.userAnswerIndex!] : 'N/A'}";
 
@@ -78,16 +75,16 @@ class QuizResultScreen extends StatelessWidget {
                           TextSpan(
                             text: "Question ${index + 1}: ",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold, // Make text bolder
-                              color: textColor, // Set text color to green, blue, or red
+                              fontWeight: FontWeight.bold,
+                              color: textColor,
                               fontSize: 20,
                             ),
                           ),
                           TextSpan(
                             text: "${question.text}",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold, // Make text bolder
-                              color: textColor, // Set text color to green, blue, or red
+                              fontWeight: FontWeight.bold,
+                              color: textColor,
                               fontSize: 20,
                             ),
                           ),
@@ -101,40 +98,40 @@ class QuizResultScreen extends StatelessWidget {
                           TextSpan(
                             text: isUnanswered ? "Your Answer: Not Answered" : "Your Answer: ",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold, // Make text bolder
-                              color: textColor, // Set text color to green, blue, or red
+                              fontWeight: FontWeight.bold,
+                              color: textColor,
                               fontSize:20,
                             ),
                           ),
                           TextSpan(
                             text: "${question.userAnswerIndex != null ? question.options[question.userAnswerIndex!] : 'N/A'}",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold, // Make text bolder
-                              color: textColor, // Set text color to green, blue, or red
+                              fontWeight: FontWeight.bold,
+                              color: textColor,
                               fontSize: 20,
                             ),
                           ),
                           TextSpan(
                             text: " (Correct Answer: ",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold, // Make text bolder
+                              fontWeight: FontWeight.bold,
                               color: textColor,
-                              fontSize: 20,// Set text color to green, blue, or red
+                              fontSize: 20,
                             ),
                           ),
                           TextSpan(
                             text: "${question.options[question.correctOptionIndex]}",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold, // Make text bolder
-                              color: textColor, // Set text color to green, blue, or red
+                              fontWeight: FontWeight.bold,
+                              color: textColor,
                               fontSize: 20,
                             ),
                           ),
                           TextSpan(
                             text: ")",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold, // Make text bolder
-                              color: textColor, // Set text color to green, blue, or red
+                              fontWeight: FontWeight.bold,
+                              color: textColor,
                               fontSize: 20,
                             ),
                           ),
@@ -148,13 +145,13 @@ class QuizResultScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                getFeedback(), // Display the feedback message
+                getFeedback(),
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.brown, // Set text color to brown
-                  fontWeight: FontWeight.bold, // Make text bolder
+                  color: Colors.brown,
+                  fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center, // Center align the text
+                textAlign: TextAlign.center,
               ),
             ),
           ],
