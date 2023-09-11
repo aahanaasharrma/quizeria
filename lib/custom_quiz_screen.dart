@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:quizeria/quiz_data.dart'; // Import your quiz data functions
+import 'package:quizeria/quiz_data.dart';
 import 'dart:convert';
 
 import 'package:quizeria/quiz_screen.dart';
@@ -186,11 +186,9 @@ class _CustomQuizScreenState extends State<CustomQuizScreen> {
                       final topic = _topicController.text;
                       if (topic.isNotEmpty) {
                         final categoryId = await fetchCategoryIDByTopic(topic);
-                        print('Category ID: $categoryId'); // Add this line for debugging
 
                         if (categoryId != null) {
                           final questions = await fetchQuestionsByCategory(categoryId, numberOfQuestions);
-                          print('Fetched Questions: $questions'); // Add this line for debugging
 
                           if (questions.isNotEmpty) {
                             // Navigate to the quiz screen with the fetched questions

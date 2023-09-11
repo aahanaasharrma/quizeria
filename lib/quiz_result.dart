@@ -38,7 +38,11 @@ class QuizResultScreen extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 40), // Add space at the top
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                // Use Navigator.popUntil to go back to the home page
+                Navigator.popUntil(context, ModalRoute.withName('home_page.dart')); // Replace '/' with the route of your home page
+              },
+
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.brown), // Set button background color to brown
                 minimumSize: MaterialStateProperty.all(Size(400, 80)), // Set button size

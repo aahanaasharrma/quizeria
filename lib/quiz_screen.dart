@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quizeria/quiz_result.dart'; // Import the QuizResultScreen
+import 'package:quizeria/quiz_result.dart';
 import 'dart:async';
 import 'quiz_data.dart';
 
